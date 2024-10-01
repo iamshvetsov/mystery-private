@@ -1,0 +1,14 @@
+;; String "Open"
+slice __gen_slice_string_4b260e56f5f35106c8fa9b15508449c87ee52316ee87dec8d8b44a49b79ef00a() asm """
+    B{b5ee9c724101010100060000084f70656e8772c40d} B>boc <s PUSHSLICE
+""";
+
+;; String "Close"
+slice __gen_slice_string_c5f1c232b5d6ee117ab971f7def7c23a1337b6f2a4dfaf5f91f3acdeb787d125() asm """
+    B{b5ee9c7241010101000700000a436c6f736516c82eb6} B>boc <s PUSHSLICE
+""";
+
+;; String "Liquidate"
+slice __gen_slice_string_5ae12f53f1644245f3cc2a9f8045697011d33af1e6588994518e1290fecfd519() asm """
+    B{b5ee9c7241010101000b0000124c6971756964617465ce773758} B>boc <s PUSHSLICE
+""";

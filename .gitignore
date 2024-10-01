@@ -1,0 +1,5 @@
+frontend/node_modules
+frontend/dist
+ton/node_modules
+ton/build
+ton/temp

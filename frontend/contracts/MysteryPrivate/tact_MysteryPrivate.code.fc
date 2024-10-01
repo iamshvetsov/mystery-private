@@ -1,0 +1,151 @@
+#pragma version =0.4.4;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
+
+#include "tact_MysteryPrivate.headers.fc";
+#include "tact_MysteryPrivate.stdlib.fc";
+#include "tact_MysteryPrivate.storage.fc";
+
+;;
+;; Contract MysteryPrivate functions
+;;
+
+(cell) $MysteryPrivate$_contract_init() impure inline_ref {
+    var (($self'owners)) = (null());
+    return ($self'owners);
+}
+
+((cell), slice) $MysteryPrivate$_fun_positionsAddress((cell) $self, slice $owner) impure inline_ref {
+    var (($self'owners)) = $self;
+    var $fresh$ret_5 = __tact_dict_get_slice_slice($self'owners, 267, $owner);
+    return (($self'owners), $fresh$ret_5);
+}
+
+;;
+;; Receivers of a Contract MysteryPrivate
+;;
+
+(((cell)), ()) $MysteryPrivate$_internal_binary_OpenPosition((cell) $self, (slice, int, int, int) $msg) impure inline {
+    var ($self'owners) = $self;
+    var ($msg'token, $msg'entryPrice, $msg'amount, $msg'liquidationPrice) = $msg;
+    cell $body = $InternalOpenPosition$_store_cell($InternalOpenPosition$_constructor_sender_token_entryPrice_amount_liquidationPrice(__tact_context_get_sender(), $msg'token, $msg'entryPrice, $msg'amount, $msg'liquidationPrice));
+    if (null?(__tact_dict_get_slice_slice($self'owners, 267, __tact_context_get_sender()))) {
+        var ($init'code, $init'data) = $Positions$_init_child(__tact_context_sys, $global_myAddress(), __tact_context_get_sender());
+        slice $address = $global_contractAddress(($init'code, $init'data));
+        $self'owners~__tact_dict_set_slice_slice(267, __tact_context_get_sender(), $address);
+        $global_send($SendParameters$_constructor_to_body_value_mode_code_data($address, $body, 50000000, 2, $init'code, $init'data));
+    } else {
+        $global_send($SendParameters$_constructor_to_body_value_mode(__tact_not_null(__tact_dict_get_slice_slice($self'owners, 267, __tact_context_get_sender())), $body, 50000000, 2));
+    }
+    return (($self'owners), ());
+}
+
+(((cell)), ()) $MysteryPrivate$_internal_binary_ClosePosition((cell) $self, (int, int, int) $msg) impure inline {
+    var ($self'owners) = $self;
+    var ($msg'seqno, $msg'markPrice, $msg'value) = $msg;
+    throw_unless(20030, (~ null?(__tact_dict_get_slice_slice($self'owners, 267, __tact_context_get_sender()))));
+    $global_send($SendParameters$_constructor_to_body_value_mode(__tact_not_null(__tact_dict_get_slice_slice($self'owners, 267, __tact_context_get_sender())), $InternalClosePosition$_store_cell($InternalClosePosition$_constructor_sender_seqno_markPrice(__tact_context_get_sender(), $msg'seqno, $msg'markPrice)), 50000000, 2));
+    $global_send($SendParameters$_constructor_to_value_mode(__tact_context_get_sender(), ($msg'value - 50000000), 66));
+    return (($self'owners), ());
+}
+
+(((cell)), ()) $MysteryPrivate$_internal_binary_LiquidatePosition((cell) $self, (int, int) $msg) impure inline {
+    var ($self'owners) = $self;
+    var ($msg'seqno, $msg'markPrice) = $msg;
+    throw_unless(20030, (~ null?(__tact_dict_get_slice_slice($self'owners, 267, __tact_context_get_sender()))));
+    $global_send($SendParameters$_constructor_to_body_value_mode(__tact_not_null(__tact_dict_get_slice_slice($self'owners, 267, __tact_context_get_sender())), $InternalLiquidatePosition$_store_cell($InternalLiquidatePosition$_constructor_sender_seqno_markPrice(__tact_context_get_sender(), $msg'seqno, $msg'markPrice)), 50000000, 2));
+    return (($self'owners), ());
+}
+
+(((cell)), ()) $MysteryPrivate$_internal_binary_Deploy((cell) $self, (int) $deploy) impure inline {
+    var ($self'owners) = $self;
+    var ($deploy'queryId) = $deploy;
+    ($self'owners)~$MysteryPrivate$_fun_notify($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId)));
+    return (($self'owners), ());
+}
+
+;;
+;; Get methods of a Contract MysteryPrivate
+;;
+
+_ %positionsAddress(slice $owner) method_id(87627) {
+    slice $owner = __tact_verify_address($owner);
+    var self = $MysteryPrivate$_contract_load();
+    var res = self~$MysteryPrivate$_fun_positionsAddress($owner);
+    return res;
+}
+
+_ lazy_deployment_completed() method_id {
+    return get_data().begin_parse().load_int(1);
+}
+
+;;
+;; Routing of a Contract MysteryPrivate
+;;
+
+((cell), int) $MysteryPrivate$_contract_router_internal((cell) self, int msg_bounced, slice in_msg) impure inline_ref {
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    
+    
+    ;; Receive OpenPosition message
+    if (op == 2326216063) {
+        var msg = in_msg~$OpenPosition$_load();
+        self~$MysteryPrivate$_internal_binary_OpenPosition(msg);
+        return (self, true);
+    }
+    
+    ;; Receive ClosePosition message
+    if (op == 2394813661) {
+        var msg = in_msg~$ClosePosition$_load();
+        self~$MysteryPrivate$_internal_binary_ClosePosition(msg);
+        return (self, true);
+    }
+    
+    ;; Receive LiquidatePosition message
+    if (op == 1034647345) {
+        var msg = in_msg~$LiquidatePosition$_load();
+        self~$MysteryPrivate$_internal_binary_LiquidatePosition(msg);
+        return (self, true);
+    }
+    
+    ;; Receive Deploy message
+    if (op == 2490013878) {
+        var msg = in_msg~$Deploy$_load();
+        self~$MysteryPrivate$_internal_binary_Deploy(msg);
+        return (self, true);
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = -(msg_flags & 1);
+    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var self = $MysteryPrivate$_contract_load();
+    
+    ;; Handle operation
+    int handled = self~$MysteryPrivate$_contract_router_internal(msg_bounced, in_msg);
+    
+    ;; Throw if not handled
+    throw_unless(130, handled);
+    
+    ;; Persist state
+    $MysteryPrivate$_contract_store(self);
+}

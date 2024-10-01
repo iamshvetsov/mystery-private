@@ -1,0 +1,241 @@
+;;
+;; Type: StateInit
+;; TLB: _ code:^cell data:^cell = StateInit
+;;
+
+((cell, cell)) $StateInit$_not_null(tuple v) inline {
+    throw_if(128, null?(v));
+    var (cell vvv'code, cell vvv'data) = __tact_tuple_destroy_2(v);
+    return (vvv'code, vvv'data);
+}
+
+;;
+;; Type: SendParameters
+;; TLB: _ bounce:bool to:address value:int257 mode:int257 body:Maybe ^cell code:Maybe ^cell data:Maybe ^cell = SendParameters
+;;
+
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body_code_data(int $bounce, slice $to, int $value, int $mode, cell $body, cell $code, cell $data) inline {
+    return ($bounce, $to, $value, $mode, $body, $code, $data);
+}
+
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_body_value_mode_code_data(slice $to, cell $body, int $value, int $mode, cell $code, cell $data) inline {
+    return (true, $to, $value, $mode, $body, $code, $data);
+}
+
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_body_value_mode(slice $to, cell $body, int $value, int $mode) inline {
+    return (true, $to, $value, $mode, $body, null(), null());
+}
+
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_mode(slice $to, int $value, int $mode) inline {
+    return (true, $to, $value, $mode, null(), null(), null());
+}
+
+;;
+;; Type: Deploy
+;; Header: 0x946a98b6
+;; TLB: deploy#946a98b6 queryId:uint64 = Deploy
+;;
+
+(slice, ((int))) $Deploy$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 2490013878);
+    var v'queryId = sc_0~load_uint(64);
+    return (sc_0, (v'queryId));
+}
+
+;;
+;; Type: DeployOk
+;; Header: 0xaff90f57
+;; TLB: deploy_ok#aff90f57 queryId:uint64 = DeployOk
+;;
+
+builder $DeployOk$_store(builder build_0, (int) v) inline {
+    var (v'queryId) = v;
+    build_0 = store_uint(build_0, 2952335191, 32);
+    build_0 = build_0.store_uint(v'queryId, 64);
+    return build_0;
+}
+
+cell $DeployOk$_store_cell((int) v) inline {
+    return $DeployOk$_store(begin_cell(), v).end_cell();
+}
+
+((int)) $DeployOk$_constructor_queryId(int $queryId) inline {
+    return ($queryId);
+}
+
+;;
+;; Type: OpenPosition
+;; Header: 0x8aa73d7f
+;; TLB: open_position#8aa73d7f token:address entryPrice:coins amount:coins liquidationPrice:coins = OpenPosition
+;;
+
+(slice, ((slice, int, int, int))) $OpenPosition$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 2326216063);
+    var v'token = sc_0~__tact_load_address();
+    var v'entryPrice = sc_0~load_coins();
+    var v'amount = sc_0~load_coins();
+    var v'liquidationPrice = sc_0~load_coins();
+    return (sc_0, (v'token, v'entryPrice, v'amount, v'liquidationPrice));
+}
+
+;;
+;; Type: ClosePosition
+;; Header: 0x8ebdf4dd
+;; TLB: close_position#8ebdf4dd seqno:uint256 markPrice:coins value:coins = ClosePosition
+;;
+
+(slice, ((int, int, int))) $ClosePosition$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 2394813661);
+    var v'seqno = sc_0~load_uint(256);
+    var v'markPrice = sc_0~load_coins();
+    var v'value = sc_0~load_coins();
+    return (sc_0, (v'seqno, v'markPrice, v'value));
+}
+
+;;
+;; Type: LiquidatePosition
+;; Header: 0x3dab7731
+;; TLB: liquidate_position#3dab7731 seqno:uint256 markPrice:coins = LiquidatePosition
+;;
+
+(slice, ((int, int))) $LiquidatePosition$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 1034647345);
+    var v'seqno = sc_0~load_uint(256);
+    var v'markPrice = sc_0~load_coins();
+    return (sc_0, (v'seqno, v'markPrice));
+}
+
+;;
+;; Type: InternalOpenPosition
+;; Header: 0x482f2873
+;; TLB: internal_open_position#482f2873 sender:address token:address entryPrice:coins amount:coins liquidationPrice:coins = InternalOpenPosition
+;;
+
+builder $InternalOpenPosition$_store(builder build_0, (slice, slice, int, int, int) v) inline {
+    var (v'sender, v'token, v'entryPrice, v'amount, v'liquidationPrice) = v;
+    build_0 = store_uint(build_0, 1211050099, 32);
+    build_0 = __tact_store_address(build_0, v'sender);
+    build_0 = __tact_store_address(build_0, v'token);
+    build_0 = build_0.store_coins(v'entryPrice);
+    build_0 = build_0.store_coins(v'amount);
+    build_0 = build_0.store_coins(v'liquidationPrice);
+    return build_0;
+}
+
+cell $InternalOpenPosition$_store_cell((slice, slice, int, int, int) v) inline {
+    return $InternalOpenPosition$_store(begin_cell(), v).end_cell();
+}
+
+((slice, slice, int, int, int)) $InternalOpenPosition$_constructor_sender_token_entryPrice_amount_liquidationPrice(slice $sender, slice $token, int $entryPrice, int $amount, int $liquidationPrice) inline {
+    return ($sender, $token, $entryPrice, $amount, $liquidationPrice);
+}
+
+;;
+;; Type: InternalClosePosition
+;; Header: 0x522c75f6
+;; TLB: internal_close_position#522c75f6 sender:address seqno:uint256 markPrice:coins = InternalClosePosition
+;;
+
+builder $InternalClosePosition$_store(builder build_0, (slice, int, int) v) inline {
+    var (v'sender, v'seqno, v'markPrice) = v;
+    build_0 = store_uint(build_0, 1378645494, 32);
+    build_0 = __tact_store_address(build_0, v'sender);
+    build_0 = build_0.store_uint(v'seqno, 256);
+    build_0 = build_0.store_coins(v'markPrice);
+    return build_0;
+}
+
+cell $InternalClosePosition$_store_cell((slice, int, int) v) inline {
+    return $InternalClosePosition$_store(begin_cell(), v).end_cell();
+}
+
+((slice, int, int)) $InternalClosePosition$_constructor_sender_seqno_markPrice(slice $sender, int $seqno, int $markPrice) inline {
+    return ($sender, $seqno, $markPrice);
+}
+
+;;
+;; Type: InternalLiquidatePosition
+;; Header: 0x8b66d420
+;; TLB: internal_liquidate_position#8b66d420 sender:address seqno:uint256 markPrice:coins = InternalLiquidatePosition
+;;
+
+builder $InternalLiquidatePosition$_store(builder build_0, (slice, int, int) v) inline {
+    var (v'sender, v'seqno, v'markPrice) = v;
+    build_0 = store_uint(build_0, 2338772000, 32);
+    build_0 = __tact_store_address(build_0, v'sender);
+    build_0 = build_0.store_uint(v'seqno, 256);
+    build_0 = build_0.store_coins(v'markPrice);
+    return build_0;
+}
+
+cell $InternalLiquidatePosition$_store_cell((slice, int, int) v) inline {
+    return $InternalLiquidatePosition$_store(begin_cell(), v).end_cell();
+}
+
+((slice, int, int)) $InternalLiquidatePosition$_constructor_sender_seqno_markPrice(slice $sender, int $seqno, int $markPrice) inline {
+    return ($sender, $seqno, $markPrice);
+}
+
+;;
+;; Type: Positions
+;;
+
+builder $Positions$init$_store(builder build_0, (slice, slice) v) inline {
+    var (v'parent, v'owner) = v;
+    build_0 = __tact_store_address(build_0, v'parent);
+    build_0 = __tact_store_address(build_0, v'owner);
+    return build_0;
+}
+
+(cell, cell) $Positions$_init_child(cell sys', slice $parent, slice $owner) inline_ref {
+    slice sc' = sys'.begin_parse();
+    cell source = sc'~load_dict();
+    cell contracts = new_dict();
+    
+    ;; Contract Code: Positions
+    cell mine = __tact_dict_get_code(source, 64746);
+    contracts = __tact_dict_set_code(contracts, 64746, mine);
+    
+    ;; Build cell
+    builder b = begin_cell();
+    b = b.store_ref(begin_cell().store_dict(contracts).end_cell());
+    b = b.store_int(false, 1);
+    b = $Positions$init$_store(b, ($parent, $owner));
+    return (mine, b.end_cell());
+}
+
+;;
+;; Type: MysteryPrivate
+;;
+
+builder $MysteryPrivate$_store(builder build_0, (cell) v) inline {
+    var (v'owners) = v;
+    build_0 = build_0.store_dict(v'owners);
+    return build_0;
+}
+
+(slice, ((cell))) $MysteryPrivate$_load(slice sc_0) inline {
+    var v'owners = sc_0~load_dict();
+    return (sc_0, (v'owners));
+}
+
+(cell) $MysteryPrivate$_contract_load() impure inline_ref {
+    slice $sc = get_data().begin_parse();
+    __tact_context_sys = $sc~load_ref();
+    int $loaded = $sc~load_int(1);
+    if ($loaded) {
+        return $sc~$MysteryPrivate$_load();
+    } else {
+        ;; Allow only workchain deployments
+        throw_unless(137, my_address().preload_uint(11) == 1024);
+        return $MysteryPrivate$_contract_init();
+    }
+}
+
+() $MysteryPrivate$_contract_store((cell) v) impure inline {
+    builder b = begin_cell();
+    b = b.store_ref(__tact_context_sys);
+    b = b.store_int(true, 1);
+    b = $MysteryPrivate$_store(b, v);
+    set_data(b.end_cell());
+}

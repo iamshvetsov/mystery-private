@@ -1,0 +1,168 @@
+#pragma version =0.4.4;
+#pragma allow-post-modification;
+#pragma compute-asm-ltr;
+
+#include "tact_Positions.headers.fc";
+#include "tact_Positions.stdlib.fc";
+#include "tact_Positions.constants.fc";
+#include "tact_Positions.storage.fc";
+
+;;
+;; Contract Positions functions
+;;
+
+(slice, slice, int, cell) $Positions$_contract_init(slice $parent, slice $owner) impure inline_ref {
+    var (($self'parent, $self'owner, $self'numPositions, $self'positions)) = (null(), null(), 0, null());
+    $self'parent = $parent;
+    $self'owner = $owner;
+    return ($self'parent, $self'owner, $self'numPositions, $self'positions);
+}
+
+((slice, slice, int, cell), int) $Positions$_fun_numPositions((slice, slice, int, cell) $self) impure inline_ref {
+    var (($self'parent, $self'owner, $self'numPositions, $self'positions)) = $self;
+    var $fresh$ret_0 = $self'numPositions;
+    return (($self'parent, $self'owner, $self'numPositions, $self'positions), $fresh$ret_0);
+}
+
+((slice, slice, int, cell), cell) $Positions$_fun_positions((slice, slice, int, cell) $self) impure inline_ref {
+    var (($self'parent, $self'owner, $self'numPositions, $self'positions)) = $self;
+    var $fresh$ret_1 = $self'positions;
+    return (($self'parent, $self'owner, $self'numPositions, $self'positions), $fresh$ret_1);
+}
+
+;;
+;; Receivers of a Contract Positions
+;;
+
+(((slice, slice, int, cell)), ()) $Positions$_internal_binary_InternalOpenPosition((slice, slice, int, cell) $self, (slice, slice, int, int, int) $msg) impure inline {
+    var ($self'parent, $self'owner, $self'numPositions, $self'positions) = $self;
+    var ($msg'sender, $msg'token, $msg'entryPrice, $msg'amount, $msg'liquidationPrice) = $msg;
+    throw_unless(58322, ( __tact_slice_eq_bits($self'parent, __tact_context_get_sender()) ));
+    throw_unless(28967, ( __tact_slice_eq_bits($self'owner, $msg'sender) ));
+    throw_unless(26863, ($msg'liquidationPrice == (2 * $msg'entryPrice)));
+    $self'numPositions = ($self'numPositions + 1);
+    $self'positions~__tact_dict_set_int_cell(257, $self'numPositions, $Position$_store_cell($Position$_constructor_seqno_token_entryPrice_amount_liquidationPrice_status_closePrice($self'numPositions, $msg'token, $msg'entryPrice, $msg'amount, $msg'liquidationPrice, __gen_slice_string_4b260e56f5f35106c8fa9b15508449c87ee52316ee87dec8d8b44a49b79ef00a(), 0)));
+    return (($self'parent, $self'owner, $self'numPositions, $self'positions), ());
+}
+
+(((slice, slice, int, cell)), ()) $Positions$_internal_binary_InternalClosePosition((slice, slice, int, cell) $self, (slice, int, int) $msg) impure inline {
+    var ($self'parent, $self'owner, $self'numPositions, $self'positions) = $self;
+    var ($msg'sender, $msg'seqno, $msg'markPrice) = $msg;
+    throw_unless(58322, ( __tact_slice_eq_bits($self'parent, __tact_context_get_sender()) ));
+    throw_unless(28967, ( __tact_slice_eq_bits($self'owner, $msg'sender) ));
+    throw_unless(40771, ($msg'seqno <= $self'numPositions));
+    var ($position'seqno, $position'token, $position'entryPrice, $position'amount, $position'liquidationPrice, $position'status, $position'closePrice) = $Position$_not_null($Position$_load_opt(__tact_dict_get_int_cell($self'positions, 257, $msg'seqno)));
+    throw_unless(32672, __tact_slice_eq(__gen_slice_string_4b260e56f5f35106c8fa9b15508449c87ee52316ee87dec8d8b44a49b79ef00a(), $position'status));
+    $self'positions~__tact_dict_set_int_cell(257, $msg'seqno, $Position$_store_cell($Position$_constructor_seqno_token_entryPrice_amount_liquidationPrice_status_closePrice($position'seqno, $position'token, $position'entryPrice, $position'amount, $position'liquidationPrice, __gen_slice_string_c5f1c232b5d6ee117ab971f7def7c23a1337b6f2a4dfaf5f91f3acdeb787d125(), $msg'markPrice)));
+    return (($self'parent, $self'owner, $self'numPositions, $self'positions), ());
+}
+
+(((slice, slice, int, cell)), ()) $Positions$_internal_binary_InternalLiquidatePosition((slice, slice, int, cell) $self, (slice, int, int) $msg) impure inline {
+    var ($self'parent, $self'owner, $self'numPositions, $self'positions) = $self;
+    var ($msg'sender, $msg'seqno, $msg'markPrice) = $msg;
+    throw_unless(58322, ( __tact_slice_eq_bits($self'parent, __tact_context_get_sender()) ));
+    throw_unless(28967, ( __tact_slice_eq_bits($self'owner, $msg'sender) ));
+    throw_unless(40771, ($msg'seqno <= $self'numPositions));
+    var ($position'seqno, $position'token, $position'entryPrice, $position'amount, $position'liquidationPrice, $position'status, $position'closePrice) = $Position$_not_null($Position$_load_opt(__tact_dict_get_int_cell($self'positions, 257, $msg'seqno)));
+    throw_unless(28546, ($position'liquidationPrice == $msg'markPrice));
+    $self'positions~__tact_dict_set_int_cell(257, $msg'seqno, $Position$_store_cell($Position$_constructor_seqno_token_entryPrice_amount_liquidationPrice_status_closePrice($position'seqno, $position'token, $position'entryPrice, $position'amount, $position'liquidationPrice, __gen_slice_string_5ae12f53f1644245f3cc2a9f8045697011d33af1e6588994518e1290fecfd519(), $position'liquidationPrice)));
+    return (($self'parent, $self'owner, $self'numPositions, $self'positions), ());
+}
+
+(((slice, slice, int, cell)), ()) $Positions$_internal_binary_Deploy((slice, slice, int, cell) $self, (int) $deploy) impure inline {
+    var ($self'parent, $self'owner, $self'numPositions, $self'positions) = $self;
+    var ($deploy'queryId) = $deploy;
+    ($self'parent, $self'owner, $self'numPositions, $self'positions)~$Positions$_fun_notify($DeployOk$_store_cell($DeployOk$_constructor_queryId($deploy'queryId)));
+    return (($self'parent, $self'owner, $self'numPositions, $self'positions), ());
+}
+
+;;
+;; Get methods of a Contract Positions
+;;
+
+_ %numPositions() method_id(110124) {
+    var self = $Positions$_contract_load();
+    var res = self~$Positions$_fun_numPositions();
+    return res;
+}
+
+_ %positions() method_id(88854) {
+    var self = $Positions$_contract_load();
+    var res = self~$Positions$_fun_positions();
+    return res;
+}
+
+_ lazy_deployment_completed() method_id {
+    return get_data().begin_parse().load_int(1);
+}
+
+;;
+;; Routing of a Contract Positions
+;;
+
+((slice, slice, int, cell), int) $Positions$_contract_router_internal((slice, slice, int, cell) self, int msg_bounced, slice in_msg) impure inline_ref {
+    ;; Handle bounced messages
+    if (msg_bounced) {
+        return (self, true);
+    }
+    
+    ;; Parse incoming message
+    int op = 0;
+    if (slice_bits(in_msg) >= 32) {
+        op = in_msg.preload_uint(32);
+    }
+    
+    
+    ;; Receive InternalOpenPosition message
+    if (op == 1211050099) {
+        var msg = in_msg~$InternalOpenPosition$_load();
+        self~$Positions$_internal_binary_InternalOpenPosition(msg);
+        return (self, true);
+    }
+    
+    ;; Receive InternalClosePosition message
+    if (op == 1378645494) {
+        var msg = in_msg~$InternalClosePosition$_load();
+        self~$Positions$_internal_binary_InternalClosePosition(msg);
+        return (self, true);
+    }
+    
+    ;; Receive InternalLiquidatePosition message
+    if (op == 2338772000) {
+        var msg = in_msg~$InternalLiquidatePosition$_load();
+        self~$Positions$_internal_binary_InternalLiquidatePosition(msg);
+        return (self, true);
+    }
+    
+    ;; Receive Deploy message
+    if (op == 2490013878) {
+        var msg = in_msg~$Deploy$_load();
+        self~$Positions$_internal_binary_Deploy(msg);
+        return (self, true);
+    }
+    
+    return (self, false);
+}
+
+() recv_internal(int msg_value, cell in_msg_cell, slice in_msg) impure {
+    
+    ;; Context
+    var cs = in_msg_cell.begin_parse();
+    var msg_flags = cs~load_uint(4);
+    var msg_bounced = -(msg_flags & 1);
+    slice msg_sender_addr = __tact_verify_address(cs~load_msg_addr());
+    __tact_context = (msg_bounced, msg_sender_addr, msg_value, cs);
+    __tact_context_sender = msg_sender_addr;
+    
+    ;; Load contract data
+    var self = $Positions$_contract_load();
+    
+    ;; Handle operation
+    int handled = self~$Positions$_contract_router_internal(msg_bounced, in_msg);
+    
+    ;; Throw if not handled
+    throw_unless(130, handled);
+    
+    ;; Persist state
+    $Positions$_contract_store(self);
+}
